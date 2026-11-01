@@ -1,0 +1,46 @@
+{
+  "schema": "aster.use.plugin-catalog.v3",
+  "packageId": "aster/aster-document",
+  "displayName": "aster-document",
+  "description": "Pinned native runtime assets for Aster desktop.",
+  "publisher": "aster",
+  "keywords": [
+    "desktop",
+    "runtime"
+  ],
+  "categories": [
+    "operations"
+  ],
+  "version": "0.1.0+f94241c0a2f527467acff9e4228112450a7eb29b6810119f5e1156ce38e4c2b2",
+  "channel": "stable",
+  "requiresUse": ">=0.3.0, <0.4.0",
+  "target": "darwin-arm64",
+  "surfaces": [
+    {
+      "kind": "plugin",
+      "id": "runtime",
+      "optional": false
+    }
+  ],
+  "permissionCeiling": {
+    "schema": "aster.use.plugin-permissions.v1",
+    "surfaces": []
+  },
+  "permissionCeilingDigest": "sha256:09ca9d03688f57e3eff2f5da79400efc57f7f5f52d7b8be3a18e6c3337cc901c",
+  "archive": {
+    "targetName": "extensions/aster/aster-document/0.1.0+f94241c0a2f527467acff9e4228112450a7eb29b6810119f5e1156ce38e4c2b2/stable/darwin-arm64/oci-ghcr-v1/operations/a54ce56349fedcb62b63f2054ec7b2db13de3835633c21f967fcf2ec1ccba9bd/aster-document.aix",
+    "length": 46719510,
+    "sha256": "sha256:a689f6c422b9a81115d1a4000803af36ec0db0b82db7f9ff0ce62e5047eead24"
+  },
+  "package": {
+    "expandedBytes": 84508760,
+    "fileCount": 30,
+    "sha256": "sha256:2d508cef015cdc34cb14f0302f8c1e4dde6502ccb8814a48fb957fc0abfc4745",
+    "manifestSha256": "sha256:d9171e3ecfdeb432669c5962784fb81d7aa94603519f348e6d6de7653d2a8bb9"
+  },
+  "license": "MIT",
+  "repository": "https://github.com/aster-ai-lab/plugins",
+  "availability": {
+    "state": "available"
+  }
+}

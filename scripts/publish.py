@@ -37,7 +37,7 @@ def publish(candidate, aster, oras):
         require((package["packageId"], package["version"], package["packageSha256"]) == (pin["packageId"], pin["version"], pin["packageSha256"]), "package identity mismatch")
         source = candidate / "repository" / pin["target"]
         with tempfile.TemporaryDirectory() as validation:
-            result = subprocess.run([str(aster), "use", "registry", "package", "prepare", str(archive),
+            result = subprocess.run([str(aster), "registry", "package", "prepare", str(archive),
                                      "--repository", str(source), "--domain", "operations",
                                      "--output", str(Path(validation) / "manifest.json"), "--json"],
                                     check=True, capture_output=True)
@@ -45,6 +45,11 @@ def publish(candidate, aster, oras):
             require(prepared["package"] == package and prepared["manifestSha256"] == publication["manifestSha256"], "native preparation changed")
         repository = publication["ociRepository"]
         require(repository == "ghcr.io/aster-ai-lab/plugins/operations/aster/" + name, "unexpected OCI repository")
+        record_path = catalog / (name + "-" + pin["version"] + "-" + pin["target"] + ".json")
+        if record_path.exists():
+            previous = json.loads(record_path.read_bytes())
+            require(previous["archive"]["sha256"] == "sha256:" + pin["sha256"],
+                    "a published version is immutable; reuse its original AIX and lock")
         with tempfile.TemporaryDirectory() as directory:
             layout = Path(directory)
             blobs = layout / "blobs/sha256"
@@ -75,7 +80,7 @@ def publish(candidate, aster, oras):
                   "package": {"expandedBytes": package["byteCount"], "fileCount": package["fileCount"],
                               "sha256": "sha256:" + pin["packageSha256"], "manifestSha256": "sha256:" + pin["manifestSha256"]},
                   "license": "MIT", "repository": "https://github.com/aster-ai-lab/plugins", "availability": {"state": "available"}}
-        (catalog / (name + "-" + pin["target"] + ".json")).write_text(json.dumps(record, indent=2) + "\n", encoding="utf-8")
+        (record_path).write_text(json.dumps(record, indent=2) + "\n", encoding="utf-8")
     locks = ROOT / "registry/runtime-locks"
     locks.mkdir(parents=True, exist_ok=True)
     shutil.copyfile(candidate / "runtime-components.json", locks / (next(iter(lock["components"].values()))["target"] + ".json"))
@@ -84,7 +89,7 @@ def publish(candidate, aster, oras):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("candidate", type=Path)
-    parser.add_argument("--aster", required=True, type=Path)
+    parser.add_argument("--aster-use-bin", required=True, type=Path)
     parser.add_argument("--oras", required=True, type=Path)
     args = parser.parse_args()
-    publish(args.candidate.resolve(), args.aster.resolve(), args.oras.resolve())
+    publish(args.candidate.resolve(), args.aster_use_bin.resolve(), args.oras.resolve())

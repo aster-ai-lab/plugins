@@ -1,0 +1,40 @@
+{
+  "components": {
+    "aster-document": {
+      "archive": "aster-document-0.1.0+f94241c0a2f527467acff9e4228112450a7eb29b6810119f5e1156ce38e4c2b2-darwin-arm64.aix",
+      "manifestSha256": "d9171e3ecfdeb432669c5962784fb81d7aa94603519f348e6d6de7653d2a8bb9",
+      "packageId": "aster/aster-document",
+      "packageSha256": "2d508cef015cdc34cb14f0302f8c1e4dde6502ccb8814a48fb957fc0abfc4745",
+      "required": true,
+      "sha256": "a689f6c422b9a81115d1a4000803af36ec0db0b82db7f9ff0ce62e5047eead24",
+      "size": 46719510,
+      "target": "darwin-arm64",
+      "version": "0.1.0+f94241c0a2f527467acff9e4228112450a7eb29b6810119f5e1156ce38e4c2b2"
+    },
+    "aster-office": {
+      "archive": "aster-office-0.1.0+0d393914cc9ecd6460c33b8c6cb63006c55c2613425e688f10f7cacde582027c-darwin-arm64.aix",
+      "manifestSha256": "2e090ca979a887b8aa678350f0ff146b7619787fa4f0463ee90e55d1d702fdb5",
+      "packageId": "aster/aster-office",
+      "packageSha256": "748ca3e218bdab216796d78eec955cfe4dff736d29163bc4dd0114a9351f173d",
+      "required": false,
+      "sha256": "95fc496612927babb2778740cdc3759c88763004fcc1e6acd8765aa4e2358708",
+      "size": 8231292,
+      "target": "darwin-arm64",
+      "version": "0.1.0+0d393914cc9ecd6460c33b8c6cb63006c55c2613425e688f10f7cacde582027c"
+    },
+    "aster-sandbox": {
+      "archive": "aster-sandbox-0.1.0+9203e78ecfff6b7b8e64a684266a26d8186b310abccc5cc3b252f69716198819-darwin-arm64.aix",
+      "manifestSha256": "19a09441ffc2fe86bee9757f55be0cce2592e2dffc564ffba088632aae268eb8",
+      "packageId": "aster/aster-sandbox",
+      "packageSha256": "25fb8f6e991b741bf8beb14ba9b46800d7e7291b00710f14efb95560b78da55b",
+      "required": true,
+      "sha256": "36e8ef630c707251047b212e862ff960bb54899f9e76ce3b2eb019e984a92f9e",
+      "size": 49896432,
+      "target": "darwin-arm64",
+      "version": "0.1.0+9203e78ecfff6b7b8e64a684266a26d8186b310abccc5cc3b252f69716198819"
+    }
+  },
+  "deferred": true,
+  "schema": "aster.studio.runtime-components.v1",
+  "version": "0.1.11"
+}

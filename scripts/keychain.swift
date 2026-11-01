@@ -32,8 +32,13 @@ do {
         let value = ["role": role, "public": key.publicKey.rawRepresentation.map { String(format: "%02x", $0) }.joined()]
         FileHandle.standardOutput.write(try JSONSerialization.data(withJSONObject: value, options: [.sortedKeys]))
     case "sign":
-        let message = FileHandle.standardInput.readDataToEndOfFile()
-        guard message.count <= 8 * 1024 * 1024 else { fail("TUF metadata exceeds 8 MiB") }
+        var message = Data()
+        while true {
+            let chunk = try FileHandle.standardInput.read(upToCount: 64 * 1024) ?? Data()
+            if chunk.isEmpty { break }
+            guard message.count + chunk.count <= 8 * 1024 * 1024 else { fail("TUF metadata exceeds 8 MiB") }
+            message.append(chunk)
+        }
         let signature = try key.signature(for: message)
         print(signature.map { String(format: "%02x", $0) }.joined())
     case "export-online":
