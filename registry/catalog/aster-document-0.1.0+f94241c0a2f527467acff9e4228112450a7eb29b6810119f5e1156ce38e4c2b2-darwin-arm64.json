@@ -41,6 +41,7 @@
   "license": "MIT",
   "repository": "https://github.com/aster-ai-lab/plugins",
   "availability": {
-    "state": "available"
+    "state": "withdrawn",
+    "reason": "Initial candidate version exceeds the frozen selector limit; use the compatible content version."
   }
 }

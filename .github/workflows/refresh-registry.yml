@@ -12,7 +12,7 @@ jobs:
   refresh:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
       - name: Refresh online metadata
         env:
           TUF_TARGETS_KEY: ${{ secrets.TUF_TARGETS_KEY }}

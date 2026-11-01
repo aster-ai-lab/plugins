@@ -37,6 +37,7 @@ def publish(candidate, aster, oras):
         package = publication["package"]
         require((package["packageId"], package["version"], package["packageSha256"]) == (pin["packageId"], pin["version"], pin["packageSha256"]), "package identity mismatch")
         source = candidate / "repository" / pin["target"]
+        shutil.copyfile(ROOT / "domains.acl", source / "domains.acl")
         with tempfile.TemporaryDirectory() as validation:
             result = subprocess.run([str(aster), "registry", "package", "prepare", str(archive),
                                      "--repository", str(source), "--domain", "operations",

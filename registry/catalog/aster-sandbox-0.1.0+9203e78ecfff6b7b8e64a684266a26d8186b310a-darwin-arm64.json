@@ -1,0 +1,46 @@
+{
+  "schema": "aster.use.plugin-catalog.v3",
+  "packageId": "aster/aster-sandbox",
+  "displayName": "aster-sandbox",
+  "description": "Pinned native runtime assets for Aster desktop.",
+  "publisher": "aster",
+  "keywords": [
+    "desktop",
+    "runtime"
+  ],
+  "categories": [
+    "operations"
+  ],
+  "version": "0.1.0+9203e78ecfff6b7b8e64a684266a26d8186b310a",
+  "channel": "stable",
+  "requiresUse": ">=0.3.0, <0.4.0",
+  "target": "darwin-arm64",
+  "surfaces": [
+    {
+      "kind": "plugin",
+      "id": "runtime",
+      "optional": false
+    }
+  ],
+  "permissionCeiling": {
+    "schema": "aster.use.plugin-permissions.v1",
+    "surfaces": []
+  },
+  "permissionCeilingDigest": "sha256:09ca9d03688f57e3eff2f5da79400efc57f7f5f52d7b8be3a18e6c3337cc901c",
+  "archive": {
+    "targetName": "extensions/aster/aster-sandbox/0.1.0+9203e78ecfff6b7b8e64a684266a26d8186b310a/stable/darwin-arm64/oci-ghcr-v1/operations/1aa03b2381d8bfe0938fc4a888c525b2864ac727518b8e00acb0619105b580f3/aster-sandbox.aix",
+    "length": 50188055,
+    "sha256": "sha256:92dbe5b6b87b0fc9c2c452802f2d080477e39796d7207f852557bcb02f6bc522"
+  },
+  "package": {
+    "expandedBytes": 172875355,
+    "fileCount": 13,
+    "sha256": "sha256:8d3a3cc109db423fa3f8ad487479f92688eb288dcc070e6a9cc095ffd553b98c",
+    "manifestSha256": "sha256:dd402e2b58f6e405ec4cf8dab9c60c6684583c05e00805d599e8286979ed1b26"
+  },
+  "license": "MIT",
+  "repository": "https://github.com/aster-ai-lab/plugins",
+  "availability": {
+    "state": "available"
+  }
+}

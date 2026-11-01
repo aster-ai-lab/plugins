@@ -16,6 +16,8 @@ registry/root.sha256     # Desktop trust anchor
 ```
 
 Runtime components use a payload content version independent from desktop versions.
+The version uses a SHA-256 prefix within the frozen 64-character selector limit;
+archive, expanded-package and manifest integrity retain complete SHA-256 digests.
 Catalog files retain every published component version needed by supported bases.
 Publishing refuses a different archive for an existing version. The desktop
 consumes an already published target lock. An unchanged package version
