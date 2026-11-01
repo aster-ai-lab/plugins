@@ -9,6 +9,8 @@ import subprocess
 import tempfile
 import zipfile
 
+from catalog import catalog_path
+
 ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -48,8 +50,8 @@ def publish(candidate, aster, oras):
         with zipfile.ZipFile(archive) as content:
             require(sha(content.read("aster-use-extension.acl")) == pin["manifestSha256"], "native manifest pin mismatch")
         repository = publication["ociRepository"]
-        require(repository == "ghcr.io/aster-ai-lab/plugins/operations/aster/" + name, "unexpected OCI repository")
-        record_path = catalog / (name + "-" + pin["version"] + "-" + pin["target"] + ".json")
+        require(repository == "ghcr.io/aster-ai-lab/plugins/aster/" + name, "unexpected OCI repository")
+        record_path = catalog / catalog_path(pin["packageId"], pin["version"], "stable", pin["target"])
         if record_path.exists():
             previous = json.loads(record_path.read_bytes())
             require(previous["archive"]["sha256"] == "sha256:" + pin["sha256"],
@@ -74,7 +76,7 @@ def publish(candidate, aster, oras):
         permission = {"schema": "aster.use.plugin-permissions.v1", "surfaces": []}
         permission_digest = sha(json.dumps(permission, sort_keys=True, separators=(",", ":")).encode())
         target = (f'extensions/{pin["packageId"]}/{pin["version"]}/stable/{pin["target"]}/'
-                  f'oci-ghcr-v1/operations/{sha(manifest)}/{name}.aix')
+                  f'oci-ghcr-v1/{sha(manifest)}/{name}.aix')
         record = {"schema": "aster.use.plugin-catalog.v3", "packageId": pin["packageId"],
                   "displayName": name, "description": "Pinned native runtime assets for Aster desktop.",
                   "publisher": "aster", "keywords": ["desktop", "runtime"], "categories": ["operations"],
@@ -85,8 +87,9 @@ def publish(candidate, aster, oras):
                   "package": {"expandedBytes": package["byteCount"], "fileCount": package["fileCount"],
                               "sha256": "sha256:" + pin["packageSha256"], "manifestSha256": "sha256:" + pin["manifestSha256"]},
                   "license": "MIT", "repository": "https://github.com/aster-ai-lab/plugins", "availability": {"state": "available"}}
+        record_path.parent.mkdir(parents=True, exist_ok=True)
         record_path.write_text(json.dumps(record, indent=2) + "\n", encoding="utf-8")
-    locks = ROOT / "registry/runtime-locks"
+    locks = ROOT / "registry/locks/runtime"
     locks.mkdir(parents=True, exist_ok=True)
     shutil.copyfile(candidate / "runtime-components.json", locks / (next(iter(lock["components"].values()))["target"] + ".json"))
 

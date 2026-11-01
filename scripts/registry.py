@@ -10,6 +10,8 @@ from pathlib import Path
 import subprocess
 import tempfile
 
+from catalog import load_targets
+
 ROOT = Path(__file__).resolve().parents[1]
 METADATA = ROOT / "registry/metadata"
 ROLES = ("root", "targets", "snapshot", "timestamp")
@@ -85,15 +87,7 @@ def refresh(local):
     root = json.loads((METADATA / "root.json").read_bytes())["signed"]
     current = METADATA / "timestamp.json"
     version = json.loads(current.read_bytes())["signed"]["version"] + 1 if current.exists() else 1
-    targets = {}
-    for path in sorted((ROOT / "registry/catalog").glob("*.json")):
-        record = json.loads(path.read_bytes())
-        archive = record["archive"]
-        name = archive["targetName"]
-        if name in targets:
-            raise ValueError("duplicate catalog target")
-        targets[name] = {"length": archive["length"], "hashes": {"sha256": archive["sha256"].removeprefix("sha256:")},
-                         "custom": {"aster": record}}
+    targets = load_targets(ROOT / "registry/catalog")
     documents = {}
     for role, days in (("targets", 90), ("snapshot", 7), ("timestamp", 2)):
         value = {"_type": role, "spec_version": "1.0.0", "version": version, "expires": expires(days)}

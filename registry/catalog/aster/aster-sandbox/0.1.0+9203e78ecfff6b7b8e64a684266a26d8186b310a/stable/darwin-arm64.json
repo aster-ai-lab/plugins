@@ -28,7 +28,7 @@
   },
   "permissionCeilingDigest": "sha256:09ca9d03688f57e3eff2f5da79400efc57f7f5f52d7b8be3a18e6c3337cc901c",
   "archive": {
-    "targetName": "extensions/aster/aster-sandbox/0.1.0+9203e78ecfff6b7b8e64a684266a26d8186b310a/stable/darwin-arm64/oci-ghcr-v1/operations/1aa03b2381d8bfe0938fc4a888c525b2864ac727518b8e00acb0619105b580f3/aster-sandbox.aix",
+    "targetName": "extensions/aster/aster-sandbox/0.1.0+9203e78ecfff6b7b8e64a684266a26d8186b310a/stable/darwin-arm64/oci-ghcr-v1/1aa03b2381d8bfe0938fc4a888c525b2864ac727518b8e00acb0619105b580f3/aster-sandbox.aix",
     "length": 50188055,
     "sha256": "sha256:92dbe5b6b87b0fc9c2c452802f2d080477e39796d7207f852557bcb02f6bc522"
   },

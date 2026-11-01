@@ -1,6 +1,6 @@
-# aster-office
+# aster-sandbox
 
-Office companion. Installed on first Office use.
+CLI, ACP and platform sandbox companions. Required at first entry.
 
 The native producer is `apps/studio/scripts/package_runtime_components.py` in Aster.
 The complete staged source includes `aster-use-extension.acl`, `runtime.acl`,
@@ -9,4 +9,4 @@ the AIX archive before publication. Generated payloads stay out of Git.
 
 Published target: `darwin-arm64`, using verified Aster desktop v0.1.11 assets.
 See the exact signed catalog in `registry/catalog/` and target pins in
-`registry/runtime-locks/`. Other targets require native qualification.
+`registry/locks/runtime/`. Other targets require native qualification.

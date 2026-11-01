@@ -6,13 +6,17 @@ Git contains recipes, catalog records and public TUF metadata; native binaries
 and models stay in GHCR. Aster installs immutable OCI digests after TUF verification.
 
 ```
-domains.acl
-plugins/operations/aster/{aster-sandbox,aster-document,aster-office}/
-scripts/                 # Native publication and TUF signing
-registry/catalog/        # Exact native package and OCI identities
-registry/runtime-locks/  # Host-independent component pins by target
-registry/metadata/       # Public signed TUF generations
-registry/root.sha256     # Desktop trust anchor
+domains.acl                            # Explicit domain ownership and admission
+plugins/<publisher>/<name>/             # Stable plugin source identity
+recipes/runtime/<target>.py             # Qualified runtime input/build recipes
+registry/catalog/<publisher>/<name>/
+  <version>/<channel>/<target>.json     # Exact native package and OCI identities
+registry/locks/runtime/<target>.json    # Selected desktop component pins
+registry/metadata/                     # Generated public TUF metadata
+registry/root.sha256                   # Desktop trust anchor
+scripts/                               # Publication, catalog and signing tools
+tests/                                 # Repository contract checks
+docs/                                  # Layout and maintenance decisions
 ```
 
 Runtime components use a payload content version independent from desktop versions.
@@ -23,15 +27,19 @@ Publishing refuses a different archive for an existing version. The desktop
 consumes an already published target lock. An unchanged package version
 and digest reuse the installed receipt and immutable generation.
 
+Domains are explicit metadata, not part of package identity or storage addresses.
+See [layout and maintenance](docs/layout.md) for each directory's owner, generated
+boundaries and retention rules, and [contributing](CONTRIBUTING.md) for checks.
+
 ## Publish runtime components
 
 1. Build and qualify a complete desktop bundle using Aster's release workflow.
    Its native `package_runtime_components.py` producer uses
    `aster-use registry package build/check/prepare` and writes AIX, exact OCI
    manifests, publication evidence and a target lock. Native source staging is
-   `repository/<target>/plugins/<domain>/<publisher>/<name>`.
+   `repository/<target>/plugins/<publisher>/<name>`.
 2. Authenticate ORAS to GHCR with package write permission, then run
-   `python3 scripts/publish.py CANDIDATES --aster-use-bin ASTER_USE --oras ORAS`.
+   `python3 scripts/publish-runtime.py CANDIDATES --aster-use-bin ASTER_USE --oras ORAS`.
    The script rechecks the staged source with the native SDK and copies the exact
    OCI manifest. Set each new GHCR package public and verify anonymous pull before
    publishing the catalog. Publication does not run the payload or qualify a target.
@@ -48,7 +56,7 @@ The root starts with one key and threshold one; maintainers must back up the sig
 Mac's Keychain through their approved key recovery process.
 
 The initial runtime recipes use the verified macOS ARM64 desktop v0.1.11 assets.
-`scripts/build-runtime.py` validates that upstream archive before invoking the
+`recipes/runtime/darwin-arm64.py` validates that upstream archive before invoking the
 native producer from an Aster source checkout. Its native package content,
 membership and permissions match the published packages. Rebuilding can change
 ZIP bytes; retain the original published AIX and target lock for a released

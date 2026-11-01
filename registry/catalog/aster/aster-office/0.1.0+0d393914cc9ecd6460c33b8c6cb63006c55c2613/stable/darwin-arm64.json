@@ -1,7 +1,7 @@
 {
   "schema": "aster.use.plugin-catalog.v3",
-  "packageId": "aster/aster-document",
-  "displayName": "aster-document",
+  "packageId": "aster/aster-office",
+  "displayName": "aster-office",
   "description": "Pinned native runtime assets for Aster desktop.",
   "publisher": "aster",
   "keywords": [
@@ -11,7 +11,7 @@
   "categories": [
     "operations"
   ],
-  "version": "0.1.0+f94241c0a2f527467acff9e4228112450a7eb29b",
+  "version": "0.1.0+0d393914cc9ecd6460c33b8c6cb63006c55c2613",
   "channel": "stable",
   "requiresUse": ">=0.3.0, <0.4.0",
   "target": "darwin-arm64",
@@ -28,15 +28,15 @@
   },
   "permissionCeilingDigest": "sha256:09ca9d03688f57e3eff2f5da79400efc57f7f5f52d7b8be3a18e6c3337cc901c",
   "archive": {
-    "targetName": "extensions/aster/aster-document/0.1.0+f94241c0a2f527467acff9e4228112450a7eb29b/stable/darwin-arm64/oci-ghcr-v1/operations/c00ff5ad3a5b133bce527e9e191b55e1f96ab5f74f209be99c1105ef99afda7e/aster-document.aix",
-    "length": 46758302,
-    "sha256": "sha256:1a3d0e0d891748c0da9ee1c16e37d54230d78fabf72f11cb2a5cf025c991bb20"
+    "targetName": "extensions/aster/aster-office/0.1.0+0d393914cc9ecd6460c33b8c6cb63006c55c2613/stable/darwin-arm64/oci-ghcr-v1/cdfdcd69a964d7927f1eb35256f3cc7f14ffbbf2eca5a460142a1da65a56d176/aster-office.aix",
+    "length": 8272636,
+    "sha256": "sha256:a35f661c218745bf0df79df1b51a63756e13c38be873b0933b3ab347fd3c0838"
   },
   "package": {
-    "expandedBytes": 84508736,
-    "fileCount": 30,
-    "sha256": "sha256:66f8800cdc0e814a4fa047cc605a30af0c33ebf0bbad9a960c6a9b661de3a412",
-    "manifestSha256": "sha256:7bb9eb2037614f600e724859489e85b1da3eacb3927e6a032fc4365ffa5e2eb2"
+    "expandedBytes": 19725333,
+    "fileCount": 5,
+    "sha256": "sha256:6612f3a7f71ed144e5ef59f6ad7d8d08a85d29f81b0c450b621a2aaf302d54ff",
+    "manifestSha256": "sha256:0cedb2c5657776c5bd7e0e0330b71b7f0e8df6146807d08ab9214c037dd1841d"
   },
   "license": "MIT",
   "repository": "https://github.com/aster-ai-lab/plugins",

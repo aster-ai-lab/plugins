@@ -11,7 +11,7 @@
   "categories": [
     "operations"
   ],
-  "version": "0.1.0+f94241c0a2f527467acff9e4228112450a7eb29b6810119f5e1156ce38e4c2b2",
+  "version": "0.1.0+f94241c0a2f527467acff9e4228112450a7eb29b",
   "channel": "stable",
   "requiresUse": ">=0.3.0, <0.4.0",
   "target": "darwin-arm64",
@@ -28,20 +28,19 @@
   },
   "permissionCeilingDigest": "sha256:09ca9d03688f57e3eff2f5da79400efc57f7f5f52d7b8be3a18e6c3337cc901c",
   "archive": {
-    "targetName": "extensions/aster/aster-document/0.1.0+f94241c0a2f527467acff9e4228112450a7eb29b6810119f5e1156ce38e4c2b2/stable/darwin-arm64/oci-ghcr-v1/operations/a54ce56349fedcb62b63f2054ec7b2db13de3835633c21f967fcf2ec1ccba9bd/aster-document.aix",
-    "length": 46719510,
-    "sha256": "sha256:a689f6c422b9a81115d1a4000803af36ec0db0b82db7f9ff0ce62e5047eead24"
+    "targetName": "extensions/aster/aster-document/0.1.0+f94241c0a2f527467acff9e4228112450a7eb29b/stable/darwin-arm64/oci-ghcr-v1/c00ff5ad3a5b133bce527e9e191b55e1f96ab5f74f209be99c1105ef99afda7e/aster-document.aix",
+    "length": 46758302,
+    "sha256": "sha256:1a3d0e0d891748c0da9ee1c16e37d54230d78fabf72f11cb2a5cf025c991bb20"
   },
   "package": {
-    "expandedBytes": 84508760,
+    "expandedBytes": 84508736,
     "fileCount": 30,
-    "sha256": "sha256:2d508cef015cdc34cb14f0302f8c1e4dde6502ccb8814a48fb957fc0abfc4745",
-    "manifestSha256": "sha256:d9171e3ecfdeb432669c5962784fb81d7aa94603519f348e6d6de7653d2a8bb9"
+    "sha256": "sha256:66f8800cdc0e814a4fa047cc605a30af0c33ebf0bbad9a960c6a9b661de3a412",
+    "manifestSha256": "sha256:7bb9eb2037614f600e724859489e85b1da3eacb3927e6a032fc4365ffa5e2eb2"
   },
   "license": "MIT",
   "repository": "https://github.com/aster-ai-lab/plugins",
   "availability": {
-    "state": "withdrawn",
-    "reason": "Initial candidate version exceeds the frozen selector limit; use the compatible content version."
+    "state": "available"
   }
 }
