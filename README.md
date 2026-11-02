@@ -35,11 +35,13 @@ boundaries and retention rules, and [contributing](CONTRIBUTING.md) for checks.
 
 ## Distribution status
 
-The native artifacts are stored in GHCR and the OCR download has passed native
-AIX validation. The organization currently disables public packages, so anonymous
-pull returns 401 for all four packages. Public first-run installation and the
-slim desktop release gate remain blocked until an organization owner enables
-public package publication and these packages pass anonymous qualification.
+All four official GHCR packages are public. On 2026-11-02, a fresh profile passed
+anonymous native SDK inspection, exact-version planning, installation and enabled
+package verification for every component, including TUF and content-digest checks.
+The installed OCR package also passed real MCP discovery, readiness and recognition
+of a fixed test image. The anonymous-install prerequisite for a slim desktop
+release has passed; a complete new signed desktop archive still needs its release
+qualification. The qualified target remains macOS ARM64.
 
 ## Available capabilities
 
