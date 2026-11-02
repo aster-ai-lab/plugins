@@ -1,2 +1,3 @@
 * text=auto eol=lf
 registry/metadata/*.json -text
+registry/targets/** -text

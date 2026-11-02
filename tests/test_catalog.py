@@ -1,5 +1,6 @@
 """Exercise the real catalog reader against release records and temporary trees."""
 import copy
+import hashlib
 import json
 from pathlib import Path
 import sys
@@ -8,7 +9,7 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
-from catalog import catalog_path, load_targets
+from catalog import catalog_path, load_targets, planning_storage_path
 
 
 class CatalogTest(unittest.TestCase):
@@ -86,6 +87,27 @@ class CatalogTest(unittest.TestCase):
             for directory in [Path(temporary), Path(temporary) / "missing"]:
                 with self.subTest(directory=directory), self.assertRaisesRegex(ValueError, "no records"):
                     load_targets(directory)
+
+    def test_planning_bytes_are_separately_signed_and_checked_before_publication(self):
+        record = self.record()
+        data = b'{"planning":"fixture"}\n'
+        record["planning"] = {"targetName": "extensions/aster/fixture/0.1.0/stable/any/planning-v1.json",
+                              "length": len(data), "sha256": "sha256:" + hashlib.sha256(data).hexdigest()}
+        with tempfile.TemporaryDirectory() as temporary:
+            catalog = Path(temporary) / "catalog"
+            self.write_record(catalog, record)
+            target = catalog.parent / "targets" / planning_storage_path(record["planning"])
+            target.parent.mkdir(parents=True)
+            target.write_bytes(data)
+            signed = load_targets(catalog)
+            self.assertEqual(signed[record["planning"]["targetName"]], {
+                "length": len(data), "hashes": {"sha256": hashlib.sha256(data).hexdigest()}})
+            target.write_bytes(b"changed")
+            with self.assertRaisesRegex(ValueError, "checksum"):
+                load_targets(catalog)
+        for name in ("../planning-v1.json", "extensions/../planning-v1.json", "extensions/a\\b/planning-v1.json"):
+            with self.subTest(name=name), self.assertRaises(ValueError):
+                planning_storage_path({**record["planning"], "targetName": name})
 
 
 if __name__ == "__main__":

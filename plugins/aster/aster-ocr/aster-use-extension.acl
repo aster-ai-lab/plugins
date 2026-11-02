@@ -1,0 +1,24 @@
+extension "aster/aster-ocr" {
+  schema_version = 3
+  version = "0.1.0"
+  route = "aster-ocr"
+  requires_use = ">=0.3.0, <0.4.0"
+  actions = ["read"]
+  repository { url = "https://github.com/aster-ai-lab/plugins" }
+  plugin "runtime" {
+    entry = "runtime.acl"
+    optional = false
+  }
+  mcp "ocr" {
+    transport = "stdio"
+    executable = "payload/aster-use-ocr"
+    args = ["serve", "--mcp", "--profile", "document"]
+    activation = "lazy"
+    optional = false
+  }
+  skill "aster-use-ocr" {
+    path = "skills/aster-use-ocr/SKILL.md"
+    requires_mcp = ["ocr"]
+    optional = false
+  }
+}

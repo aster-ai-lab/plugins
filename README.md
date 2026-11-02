@@ -12,14 +12,16 @@ recipes/runtime/<target>.py             # Qualified runtime input/build recipes
 registry/catalog/<publisher>/<name>/
   <version>/<channel>/<target>.json     # Exact native package and OCI identities
 registry/locks/runtime/<target>.json    # Selected desktop component pins
+registry/targets/                      # Hash-prefixed native MCP planning bytes
 registry/metadata/                     # Generated public TUF metadata
 registry/root.sha256                   # Desktop trust anchor
+skills/aster-plugins/                   # AI installation and connection workflow
 scripts/                               # Publication, catalog and signing tools
 tests/                                 # Repository contract checks
 docs/                                  # Layout and maintenance decisions
 ```
 
-Runtime components use a payload content version independent from desktop versions.
+Runtime components use a content version independent from desktop versions.
 The version uses a SHA-256 prefix within the frozen 64-character selector limit;
 archive, expanded-package and manifest integrity retain complete SHA-256 digests.
 Catalog files retain every published component version needed by supported bases.
@@ -30,6 +32,66 @@ and digest reuse the installed receipt and immutable generation.
 Domains are explicit metadata, not part of package identity or storage addresses.
 See [layout and maintenance](docs/layout.md) for each directory's owner, generated
 boundaries and retention rules, and [contributing](CONTRIBUTING.md) for checks.
+
+## Distribution status
+
+The native artifacts are stored in GHCR and the OCR download has passed native
+AIX validation. The organization currently disables public packages, so anonymous
+pull returns 401 for all four packages. Public first-run installation and the
+slim desktop release gate remain blocked until an organization owner enables
+public package publication and these packages pass anonymous qualification.
+
+## Available capabilities
+
+| Package | Contents | Desktop installation |
+| --- | --- | --- |
+| `aster/aster-sandbox` | Sandbox executable, native companions and system image | Required, installed after the base |
+| `aster/aster-document` | PDFium and document fonts | Required, installed after the base |
+| `aster/aster-office` | Office companion | Optional |
+| `aster/aster-ocr` | OCR executable, ONNX Runtime, PP-OCRv6 models, MCP and Skill | Optional; installed on first OCR use |
+
+Only **macOS ARM64** currently has a qualified target lock. Linux (including
+Kylin x86-64), Windows and macOS x86-64 need their own native packages and runtime
+qualification. A portable Rust source tree does not qualify a binary target.
+
+For AI hosts, load [the Aster plugins Skill](skills/aster-plugins/SKILL.md).
+The OCR package carries its own canonical `aster-use-ocr` Skill. Tools are exposed
+only after the host connects the installed MCP projection; use actual discovered
+names, not a hardcoded server prefix.
+
+## Install and connect
+
+The desktop host supplies its pinned signing root and component lock. A CLI host
+can register the official source using the **independently trusted** root digest
+from its Aster distribution (`registry/root.sha256` in a reviewed checkout):
+
+```text
+aster-use registry source add aster-official --github aster-ai-lab/plugins --trust-root <trusted-root-sha256> --json
+aster-use plugin inspect aster/aster-ocr --channel stable --json
+aster-use plugin plan-install aster/aster-ocr --registry-name aster-official --version-requirement "<inspected-version>" --channel stable --scope-kind user --scope-id user/current --json
+```
+
+Review the exact selected package, surfaces and permissions. After authorizing
+the plan, use the returned `.data.plan.plan.operationId` and
+`.data.plan.planDigest`, in the same profile and scope:
+
+```text
+aster-use plugin apply-plan --operation-id <operationId> --plan-digest <planDigest> --scope-kind user --scope-id user/current --yes --json
+aster-use extension inspect aster/aster-ocr --json
+aster-use capability snapshot --json
+```
+
+These commands use the native `aster-use` developer binary; normal desktop users
+install through the host plugin manager.
+The host connects the resulting MCP projection and retains its native generation
+for the process lifetime. OCR exposes `ocr_doctor` and `ocr_extract`; extraction
+input is `{"path":"/exact/local/image.png"}` and the structured result contains
+text, blocks, source evidence and warnings. Native execution permission is a
+review contract; it is not a claim of OS sandboxing.
+
+GitHub repository visibility and GHCR package visibility are separate. Every
+released package must pass an anonymous pull check; a 401 prevents first-run
+installation even when this source repository is public.
 
 ## Publish runtime components
 
@@ -55,7 +117,8 @@ root's expiry; `init-root` refuses an existing root. Online metadata refreshes d
 The root starts with one key and threshold one; maintainers must back up the signing
 Mac's Keychain through their approved key recovery process.
 
-The initial runtime recipes use the verified macOS ARM64 desktop v0.1.11 assets.
+The bootstrap runtime recipe uses the verified macOS ARM64 desktop v0.1.11 assets
+and a newly built OCR executable; models and ONNX Runtime move into the OCR AIX.
 `recipes/runtime/darwin-arm64.py` validates that upstream archive before invoking the
 native producer from an Aster source checkout. Its native package content,
 membership and permissions match the published packages. Rebuilding can change

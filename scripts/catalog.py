@@ -1,5 +1,6 @@
 """Catalog storage follows package identity, independently of source domains."""
 import json
+import hashlib
 from pathlib import Path
 
 
@@ -13,6 +14,16 @@ def catalog_path(package_id, version, channel, target):
                 or any(character in part for character in '/\\<>:"|?*\x00')):
             raise ValueError("catalog identity must use portable path segments")
     return Path(*parts[:-1], parts[-1] + ".json")
+
+
+def planning_storage_path(planning):
+    name = planning["targetName"]
+    digest = planning["sha256"].removeprefix("sha256:")
+    if (not name.startswith("extensions/") or not name.endswith("/planning-v1.json")
+            or any(part in {"", ".", ".."} for part in name.split("/")) or "\\" in name
+            or len(digest) != 64 or any(c not in "0123456789abcdef" for c in digest)):
+        raise ValueError("invalid planning target identity")
+    return Path(digest + "." + name)
 
 
 def load_targets(directory):
@@ -30,6 +41,15 @@ def load_targets(directory):
         targets[name] = {"length": archive["length"],
                          "hashes": {"sha256": archive["sha256"].removeprefix("sha256:")},
                          "custom": {"aster": record}}
+        if planning := record.get("planning"):
+            data = (directory.parent / "targets" / planning_storage_path(planning)).read_bytes()
+            if (not 0 < len(data) <= 4 * 1024 * 1024 or len(data) != planning["length"]
+                    or "sha256:" + hashlib.sha256(data).hexdigest() != planning["sha256"]):
+                raise ValueError("planning target checksum mismatch")
+            if planning["targetName"] in targets:
+                raise ValueError("duplicate planning target")
+            targets[planning["targetName"]] = {"length": len(data), "hashes": {
+                "sha256": planning["sha256"].removeprefix("sha256:")}}
     if not targets:
         raise ValueError("catalog has no records; refusing to publish empty targets")
     return targets

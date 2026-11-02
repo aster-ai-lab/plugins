@@ -1,0 +1,23 @@
+{
+  "skill_name": "aster-plugins",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Install OCR on Kylin x86-64 using the available darwin-arm64 plugin and then read /tmp/发票 1.png.",
+      "expected_output": "Reject the target substitution, explain that a qualified Linux x86-64 package is required, and do not execute the macOS artifact.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "OCR is installed but there are no OCR tools. Can I run aster use mcp serve aster/aster-ocr and call mcp__use_ocr__ocr_extract?",
+      "expected_output": "Inspect capability projections, connect through the host MCP adapter, use actual discovered names, and reject the nonexistent serve command and guessed prefix.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "The plan exposes operationId and planDigest, but aster use install asks for confirmation. Finish installation for the already authorized local OCR capability.",
+      "expected_output": "Review the exact plan and use apply-plan --operation-id --plan-digest --scope-kind user --scope-id user/current --yes in the same profile, without inventing identifiers or broadening grants.",
+      "files": []
+    }
+  ]
+}

@@ -9,7 +9,7 @@ import subprocess
 import tempfile
 import zipfile
 
-from catalog import catalog_path
+from catalog import catalog_path, planning_storage_path
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -40,13 +40,28 @@ def publish(candidate, aster, oras):
         require((package["packageId"], package["version"], package["packageSha256"]) == (pin["packageId"], pin["version"], pin["packageSha256"]), "package identity mismatch")
         source = candidate / "repository" / pin["target"]
         shutil.copyfile(ROOT / "domains.acl", source / "domains.acl")
+        metadata = stem.with_suffix(stem.suffix + ".catalog-metadata.json")
+        record = publication["catalog"]
+        planning = record.get("planning")
         with tempfile.TemporaryDirectory() as validation:
-            result = subprocess.run([str(aster), "registry", "package", "prepare", str(archive),
-                                     "--repository", str(source), "--domain", "operations",
-                                     "--output", str(Path(validation) / "manifest.json"), "--json"],
-                                    check=True, capture_output=True)
+            command = [str(aster), "registry", "package", "prepare", str(archive),
+                       "--repository", str(source), "--domain", "operations", "--catalog-metadata", str(metadata),
+                       "--output", str(Path(validation) / "manifest.json"), "--json"]
+            if planning:
+                command.extend(["--planning-output", str(Path(validation) / "planning.json")])
+            result = subprocess.run(command, check=True, capture_output=True)
             prepared = json.loads(result.stdout)["data"]["aixPublication"]
-            require(prepared["package"] == package and prepared["manifestSha256"] == publication["manifestSha256"], "native preparation changed")
+            require(prepared["package"] == package and prepared["manifestSha256"] == publication["manifestSha256"]
+                    and prepared["catalog"] == record, "native preparation changed")
+            if planning:
+                data = stem.with_suffix(stem.suffix + ".planning.json").read_bytes()
+                require(data == (Path(validation) / "planning.json").read_bytes(), "native planning changed")
+                destination = ROOT / "registry/targets" / planning_storage_path(planning)
+                destination.parent.mkdir(parents=True, exist_ok=True)
+                if destination.exists():
+                    require(destination.read_bytes() == data, "published planning target changed")
+                else:
+                    destination.write_bytes(data)
         with zipfile.ZipFile(archive) as content:
             require(sha(content.read("aster-use-extension.acl")) == pin["manifestSha256"], "native manifest pin mismatch")
         repository = publication["ociRepository"]
@@ -73,20 +88,6 @@ def publish(candidate, aster, oras):
             subprocess.run([str(oras), "manifest", "fetch", repository + "@sha256:" + sha(manifest),
                             "--output", str(layout / "fetched.json")], check=True)
             require((layout / "fetched.json").read_bytes() == manifest, "published OCI manifest changed")
-        permission = {"schema": "aster.use.plugin-permissions.v1", "surfaces": []}
-        permission_digest = sha(json.dumps(permission, sort_keys=True, separators=(",", ":")).encode())
-        target = (f'extensions/{pin["packageId"]}/{pin["version"]}/stable/{pin["target"]}/'
-                  f'oci-ghcr-v1/{sha(manifest)}/{name}.aix')
-        record = {"schema": "aster.use.plugin-catalog.v3", "packageId": pin["packageId"],
-                  "displayName": name, "description": "Pinned native runtime assets for Aster desktop.",
-                  "publisher": "aster", "keywords": ["desktop", "runtime"], "categories": ["operations"],
-                  "version": pin["version"], "channel": "stable", "requiresUse": ">=0.3.0, <0.4.0",
-                  "target": pin["target"], "surfaces": [{"kind": "plugin", "id": "runtime", "optional": False}],
-                  "permissionCeiling": permission, "permissionCeilingDigest": "sha256:" + permission_digest,
-                  "archive": {"targetName": target, "length": pin["size"], "sha256": "sha256:" + pin["sha256"]},
-                  "package": {"expandedBytes": package["byteCount"], "fileCount": package["fileCount"],
-                              "sha256": "sha256:" + pin["packageSha256"], "manifestSha256": "sha256:" + pin["manifestSha256"]},
-                  "license": "MIT", "repository": "https://github.com/aster-ai-lab/plugins", "availability": {"state": "available"}}
         record_path.parent.mkdir(parents=True, exist_ok=True)
         record_path.write_text(json.dumps(record, indent=2) + "\n", encoding="utf-8")
     locks = ROOT / "registry/locks/runtime"

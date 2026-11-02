@@ -14,8 +14,10 @@ and checks `domains.acl`. No name or directory is used to guess a category.
 | `registry/catalog/<publisher>/<name>/<version>/<channel>/<target>.json` | Native publisher | One generated release record for the complete selection identity |
 | `registry/locks/runtime/<target>.json` | Runtime publisher | The currently selected component set for desktop packaging |
 | `registry/metadata/` | TUF signer | Generated signed metadata consumed by clients |
+| `registry/targets/` | Native publisher | Exact hash-prefixed MCP planning bytes, separately bound by TUF |
 | `registry/root.sha256` | Root initialization/rotation | Public trust anchor; never an online refresh output |
 | `scripts/` | Registry maintainers | Small operational entry points and their shared catalog/signing code |
+| `skills/<skill-name>/` | AI integration maintainers | Consumer instructions and bounded evaluation prompts; no native payloads |
 | `tests/` | Registry maintainers | Storage, signing-input and selected-lock contract checks |
 | `.github/workflows/` | Repository maintainers | Read-only validation and a separate secret-bearing refresh job |
 
@@ -39,6 +41,13 @@ and verifies it against the archive through the native SDK. These directories
 are not presented as independently buildable handwritten implementations.
 The producer lives in the private Studio submodule; building needs an authorized
 Aster checkout, while consuming published packages does not.
+
+`aster/aster-ocr` owns a native manifest template here. Its public producer is
+`crates/ocr/scripts/package_plugin.py` in Aster. The canonical OCR Skill stays
+beside its Rust implementation at `crates/ocr/skills/aster-use-ocr`; the producer
+copies it into the AIX. Do not maintain a second OCR Skill or a separate model
+installer in this repository. OCR content versions include the manifest template,
+Skill, runtime descriptor, executable, libraries, models, and notices.
 
 `recipes/runtime/darwin-arm64.py` describes the current approved bootstrap
 input: a digest-pinned desktop archive. It qualifies only macOS ARM64. Add a
@@ -88,6 +97,13 @@ Installation uses the signed immutable manifest and AIX digests. Tags aid
 discovery; neither a business category nor a mutable tag defines artifact
 identity. Associate packages with this GitHub repository and qualify anonymous
 pull before claiming public first-run installation.
+
+An executable MCP catalog record also names a native `planning-v1.json` target.
+The signer verifies its exact length and digest and signs it without catalog
+custom fields. With consistent snapshots, its hosted path prefixes the hash to
+the complete logical target name: `registry/targets/<sha256>.extensions/...`.
+Native SDK preparation binds its executable, arguments, activation, permission
+digest, and archive/package/manifest identities. Never hand-author this bundle.
 
 Native archives, models, extraction trees, credentials and private keys stay
 out of Git. Build candidates use an explicit output directory, normally under
