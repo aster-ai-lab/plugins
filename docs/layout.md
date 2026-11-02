@@ -69,7 +69,9 @@ empty catalog. CI compares these inputs with the current signed target set.
 After release, retain catalog versions needed by supported clients and mark
 withdrawn releases explicitly. Never replace a released archive under the
 same version. Unreleased bootstrap experiments need not remain in the active
-catalog; their changes remain in Git history.
+catalog; their changes remain in Git history. The old document bootstrap that
+embedded OCR models and ONNX Runtime has been retired from the active catalog.
+The selected document pack contains only PDF/font resources; OCR is its own package.
 
 A runtime lock is a generated selection for one target, not another package
 catalog or a build recipe. The desktop release copies and seals its selected
