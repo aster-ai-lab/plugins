@@ -62,11 +62,18 @@ names, not a hardcoded server prefix.
 ## Install and connect
 
 The desktop host supplies its pinned signing root and component lock. A CLI host
-can register the official source using the **independently trusted** root digest
+first checks `aster-use registry source list --json`. If the official source is
+missing, register it using the **independently trusted** root digest
 from its Aster distribution (`registry/root.sha256` in a reviewed checkout):
 
 ```text
 aster-use registry source add aster-official --github aster-ai-lab/plugins --trust-root <trusted-root-sha256> --json
+```
+
+Preserve existing trust roots and default-source choices. Once the source is
+configured, inspect the release and plan the exact content version:
+
+```text
 aster-use plugin inspect aster/aster-ocr --channel stable --json
 aster-use plugin plan-install aster/aster-ocr --registry-name aster-official --version-requirement "<inspected-version>" --channel stable --scope-kind user --scope-id user/current --json
 ```

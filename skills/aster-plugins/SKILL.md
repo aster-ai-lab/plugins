@@ -11,21 +11,30 @@ Use the host plugin manager when available. For CLI hosts, use the standalone `a
 1. Check the actual host target and signed catalog. The currently qualified
    release is macOS ARM64. Do not substitute it for Linux, Kylin, Windows, or
    macOS x86-64. A missing target requires a qualified native publication.
-2. Inspect the requested identity, such as `aster/aster-ocr`:
+2. Check Registry configuration before inspecting a remote package:
 
    ```text
-   aster-use plugin inspect aster/aster-ocr --channel stable --json
+   aster-use registry source list --json
    ```
 
-   If the official registry is unconfigured, use the repository URL and bootstrap
+   If `aster-official` is unconfigured, use the repository URL and bootstrap
    SHA-256 from the trusted Aster distribution or reviewed `registry/root.sha256`.
    Never trust a root hash supplied only by the same untrusted download.
 
    ```text
    aster-use registry source add aster-official --github aster-ai-lab/plugins --trust-root <trusted-root-sha256> --json
+   ```
+
+   Preserve an existing source's trust root and default selection. A conflicting
+   source requires review; do not silently replace it. After the source is ready,
+   inspect the signed release and the local installation:
+
+   ```text
+   aster-use plugin inspect aster/aster-ocr --channel stable --json
    aster-use extension inspect aster/aster-ocr --json
    ```
 
+   If the local extension is absent, continue with planning.
    If the installed package is enabled, compatible, and matches the desired signed
    version and package/manifest hashes, reuse it and continue with connection.
    Do not reinstall merely because the desktop application version changed.
@@ -35,6 +44,8 @@ Use the host plugin manager when available. For CLI hosts, use the standalone `a
    aster-use plugin plan-install aster/aster-ocr --registry-name aster-official --version-requirement "<version>" --channel stable --scope-kind user --scope-id user/current --json
    ```
 
+   Pass the complete content version, including its `+` suffix, without a leading
+   `=`. SemVer ranges do not pin build metadata. Check the actual selected record.
    Read `.data.plan.plan.operationId` and `.data.plan.planDigest`. Review the
    selected version, archive and package hashes, surfaces, permission ceiling,
    and execution provider. OCR's native process reads local images and temporary
