@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "displayName": "CUA",
+  "description": "CUA CLI with native virtualization and Linux guest helpers.",
+  "keywords": ["cli", "computer-use", "virtualization"],
+  "categories": ["operations"],
+  "target": "darwin-arm64",
+  "channel": "stable",
+  "license": "MIT"
+}

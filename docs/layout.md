@@ -1,16 +1,26 @@
 # Repository layout and maintenance
 
-The stable package identity is `<publisher>/<name>`. Source paths, catalog
-paths and GHCR repositories follow that identity. A domain describes what a
-plugin does and who reviews its publication; changing an admitted domain does
-not move its source or artifact. The native SDK receives the domain explicitly
-and checks `domains.acl`. No name or directory is used to guess a category.
+The stable package identity is `<publisher>/<name>`. Source is organized as
+`plugins/<domain>/<publisher>/<name>/`. A domain describes what a plugin does
+and who reviews its publication. Moving a plugin to another admitted domain
+moves its source directory; its package ID, catalog identity and GHCR repository
+stay stable. The native SDK receives the domain explicitly and checks
+`domains.acl`; it never guesses a category from a name or directory.
+
+The domain hierarchy is Aster's authoring policy. Artifact references retain
+the digest and size contract from [OCI content descriptors](https://github.com/opencontainers/image-spec/blob/main/descriptor.md).
+Signed role files retain the separate layout defined by [TUF](https://theupdateframework.github.io/specification/latest/#repository-layout).
+Review ownership follows [GitHub CODEOWNERS](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners),
+with real repository permissions; moving source does not rotate keys or rewrite
+published content identities.
 
 | Path | Maintained by | Contract |
 | --- | --- | --- |
 | `domains.acl` | Domain maintainers | Explicit owner/publisher admission, parsed by native `aster-acl` |
-| `plugins/<publisher>/<name>/` | Plugin maintainers | One source unit per package; README and licenses stay with it |
+| `plugins/<domain>/<publisher>/<name>/` | Plugin maintainers | One source unit per package in its admitted primary domain; README and licenses stay with it |
 | `recipes/runtime/<target>.py` | Runtime maintainers | Pinned inputs and an executable build recipe for a qualified target |
+| `recipes/<name>/<target>.py` | Acquisition maintainers | Stages qualified embedded runtime inputs outside Git and runs native package checks |
+| `recipes/<name>/<target>.json` | Acquisition maintainers | Native catalog input for the explicitly supported source target |
 | `registry/catalog/<publisher>/<name>/<version>/<channel>/<target>.json` | Native publisher | One generated release record for the complete selection identity |
 | `registry/locks/runtime/<target>.json` | Runtime publisher | The currently selected component set for desktop packaging |
 | `registry/metadata/` | TUF signer | Generated signed metadata consumed by clients |
@@ -29,8 +39,10 @@ domain owner identifiers do not grant GitHub repository or package permissions.
 
 Keep each plugin's manifest, source, assets and tests together when it has
 handwritten extension sources. Create optional subdirectories only when used.
-Do not repeat the domain in the source path, add per-version source copies,
-or commit native payloads alongside the source.
+Do not duplicate one package across domains, add per-version source copies,
+or commit native payloads alongside the source. To move a package, admit its
+publisher in the destination domain, move the complete directory and prepare
+with that explicit domain. Preparation checks that exact directory and archive.
 
 The three runtime plugins currently contain documentation and licenses here.
 Their generated `aster-use-extension.acl`, `runtime.acl` and payload membership
@@ -48,6 +60,31 @@ beside its Rust implementation at `crates/ocr/skills/aster-use-ocr`; the produce
 copies it into the AIX. Do not maintain a second OCR Skill or a separate model
 installer in this repository. OCR content versions include the manifest template,
 Skill, runtime descriptor, executable, libraries, models, and notices.
+
+External tool sources keep one `aster-use-extension.acl` and one `toolchain.acl`
+per package. Schema-v2 declares each supported native platform in a labelled
+`platform` block. The installer validates every archive declaration and selects
+the exact host; there is no per-platform source-directory copy. One AIX may have
+multiple target-specific catalog records, each prepared by the native publisher.
+Upstream notices stay byte-identical. A notice that differs for a target lives
+under `upstream-licenses/<target>/`; `.gitattributes` disables text conversion for
+these files. Source target declarations are distinct from native qualification.
+
+`aster/babeldoc-stream` keeps its manifest, launcher, exact dependency lock,
+provenance and licenses in its source unit. Its target recipe owns the generated
+`toolchain.acl` and embedded runtime payload. The recipe admits only the fixed
+qualified archive, stages the complete source under the explicit output
+repository, and invokes native build/check/prepare there. Do not hand-edit the
+generated declaration or commit the runtime archive. Rebuilding the runtime
+itself is a separate qualification; the source recipe does not silently resolve
+new wheels or replace its accepted input.
+
+`aster/aster-box` follows the same embedded-runtime contract in the explicitly
+admitted `operations` domain. Its target recipe generates `toolchain.acl` from
+the fixed accepted Box archive; the source unit retains the original local
+build provenance and native notices. The archive includes the CLI, entitled
+shim, static Linux guest init and matching native libraries. Package checks and
+version startup do not qualify VM execution or corresponding-source publication.
 
 `recipes/runtime/darwin-arm64.py` describes the current approved bootstrap
 input: a digest-pinned desktop archive. It qualifies only macOS ARM64. Add a

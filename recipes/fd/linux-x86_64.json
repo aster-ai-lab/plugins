@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "displayName": "fd",
+  "description": "fd 10.5.0，使用按平台固定长度和 SHA-256 的完整上游工具制品。",
+  "keywords": [
+    "fd",
+    "toolchain"
+  ],
+  "categories": [
+    "development"
+  ],
+  "target": "linux-x86_64",
+  "channel": "stable",
+  "license": "MIT"
+}

@@ -43,7 +43,8 @@ class CatalogTest(unittest.TestCase):
                     self.assertEqual(record["archive"]["length"], pin["size"])
                     self.assertEqual(record["package"]["sha256"], "sha256:" + pin["packageSha256"])
                     self.assertEqual(record["package"]["manifestSha256"], "sha256:" + pin["manifestSha256"])
-                    self.assertTrue((ROOT / "plugins" / pin["packageId"] / "LICENSE").is_file())
+                    self.assertIn("operations", record["categories"])
+                    self.assertTrue((ROOT / "plugins" / "operations" / pin["packageId"] / "LICENSE").is_file())
 
     def test_identity_includes_namespace_version_channel_and_target(self):
         self.assertEqual(catalog_path("acme/shared", "1.2.3", "beta", "linux-x86_64"),

@@ -1,3 +1,4 @@
 * text=auto eol=lf
+plugins/**/upstream-licenses/** -text
 registry/metadata/*.json -text
 registry/targets/** -text

@@ -4,4 +4,16 @@ plugin_domains {
     owners = ["aster-ai-lab"]
     publishers = ["aster"]
   }
+  domain "knowledge" {
+    owners = ["aster-ai-lab"]
+    publishers = ["aster"]
+  }
+  domain "development" {
+    owners = ["aster-ai-lab"]
+    publishers = ["aster"]
+  }
+  domain "productivity" {
+    owners = ["aster-ai-lab"]
+    publishers = ["aster"]
+  }
 }

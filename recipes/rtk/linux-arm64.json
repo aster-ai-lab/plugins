@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "displayName": "rtk",
+  "description": "rtk 1.1.0，使用按平台固定长度和 SHA-256 的完整上游工具制品。",
+  "keywords": [
+    "rtk",
+    "toolchain"
+  ],
+  "categories": [
+    "development"
+  ],
+  "target": "linux-arm64",
+  "channel": "stable",
+  "license": "MIT"
+}

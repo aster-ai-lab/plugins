@@ -7,7 +7,7 @@ and models stay in GHCR. Aster installs immutable OCI digests after TUF verifica
 
 ```
 domains.acl                            # Explicit domain ownership and admission
-plugins/<publisher>/<name>/             # Stable plugin source identity
+plugins/<domain>/<publisher>/<name>/    # One source unit in its admitted domain
 recipes/runtime/<target>.py             # Qualified runtime input/build recipes
 registry/catalog/<publisher>/<name>/
   <version>/<channel>/<target>.json     # Exact native package and OCI identities
@@ -29,7 +29,8 @@ Publishing refuses a different archive for an existing version. The desktop
 consumes an already published target lock. An unchanged package version
 and digest reuse the installed receipt and immutable generation.
 
-Domains are explicit metadata, not part of package identity or storage addresses.
+Domains organize source and declare review ownership. Package IDs and storage
+addresses retain `<publisher>/<name>` when source moves between domains.
 See [layout and maintenance](docs/layout.md) for each directory's owner, generated
 boundaries and retention rules, and [contributing](CONTRIBUTING.md) for checks.
 
@@ -60,6 +61,34 @@ For AI hosts, load [the Aster plugins Skill](skills/aster-plugins/SKILL.md).
 The OCR package carries its own canonical `aster-use-ocr` Skill. Tools are exposed
 only after the host connects the installed MCP projection; use actual discovered
 names, not a hardcoded server prefix.
+
+The maintained [CUA CLI source](plugins/operations/aster/cua) references an
+upstream archive by exact length and SHA-256 and declares its complete macOS
+ARM64 command bundle.
+Its [catalog input](recipes/cua/darwin-arm64.json) is consumed by native package
+preparation. It remains unpublished and is not yet offered by the marketplace.
+
+The maintained [合同审查 source](plugins/knowledge/aster/review) preserves the
+existing `aster/review` Skill and builtin agent. Its
+[catalog input](recipes/review/any.json) uses native package preparation.
+Version 1.3.0 remains unpublished; the four available market records above are
+unchanged.
+
+Seven external tools also have maintained, unpublished sources:
+`development/aster/{uv,bun,fd,rg,rtk,gh}` and
+`productivity/aster/lark-cli`, under `plugins/`. Each has one schema-v2
+`toolchain.acl` with five explicit platform archives, plus target-specific
+catalog inputs under `recipes/<name>/`. Upstream archive lengths, digests,
+command layouts and notices retain their verified candidate values.
+The native installer selects only the exact host platform. These source
+declarations do not qualify execution on all platforms or add market records.
+
+[Notion CLI](plugins/productivity/aster/ntn) also has one maintained schema-v2
+source with five explicit native targets. [BabelDOC Stream](plugins/knowledge/aster/babeldoc-stream)
+has a maintained macOS ARM64 recipe that requires its exact qualified runtime
+archive, stages native payloads outside Git, and builds/checks/prepares the AIX.
+Its interpreter, wheels, launcher and notices remain inside that AIX. Neither
+source is published by these preparation steps.
 
 ## Install and connect
 
@@ -108,7 +137,7 @@ installation even when this source repository is public.
    Its native `package_runtime_components.py` producer uses
    `aster-use registry package build/check/prepare` and writes AIX, exact OCI
    manifests, publication evidence and a target lock. Native source staging is
-   `repository/<target>/plugins/<publisher>/<name>`.
+   `repository/<target>/plugins/<domain>/<publisher>/<name>`.
 2. Authenticate ORAS to GHCR with package write permission, then run
    `python3 scripts/publish-runtime.py CANDIDATES --aster-use-bin ASTER_USE --oras ORAS`.
    The script rechecks the staged source with the native SDK and copies the exact

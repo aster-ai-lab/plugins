@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "displayName": "rg",
+  "description": "rg 15.2.0，使用按平台固定长度和 SHA-256 的完整上游工具制品。",
+  "keywords": [
+    "rg",
+    "toolchain"
+  ],
+  "categories": [
+    "development"
+  ],
+  "target": "linux-arm64",
+  "channel": "stable",
+  "license": "MIT"
+}

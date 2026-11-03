@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "displayName": "Notion CLI",
+  "description": "Notion CLI 0.23.25 with a pinned native npm bundle; no npm bootstrap installer.",
+  "keywords": [
+    "notion",
+    "ntn",
+    "toolchain"
+  ],
+  "categories": [
+    "productivity"
+  ],
+  "target": "darwin-x86_64",
+  "channel": "stable",
+  "license": "MIT"
+}

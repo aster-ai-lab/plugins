@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "displayName": "BabelDOC Stream",
+  "description": "BabelDOC Stream 0.6.4.post4 with its pinned CPython runtime and wheels.",
+  "keywords": ["babeldoc-stream", "pdf", "toolchain", "translation"],
+  "categories": ["knowledge"],
+  "target": "darwin-arm64",
+  "channel": "stable",
+  "license": "AGPL-3.0"
+}

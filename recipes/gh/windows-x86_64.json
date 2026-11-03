@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "displayName": "gh",
+  "description": "gh 2.103.3，使用按平台固定长度和 SHA-256 的完整上游工具制品。",
+  "keywords": [
+    "gh",
+    "toolchain"
+  ],
+  "categories": [
+    "development"
+  ],
+  "target": "windows-x86_64",
+  "channel": "stable",
+  "license": "MIT"
+}
