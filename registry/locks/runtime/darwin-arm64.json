@@ -32,17 +32,6 @@
       "size": 8272636,
       "target": "darwin-arm64",
       "version": "0.1.0+0d393914cc9ecd6460c33b8c6cb63006c55c2613"
-    },
-    "aster-sandbox": {
-      "archive": "aster-sandbox-0.1.0+9203e78ecfff6b7b8e64a684266a26d8186b310a-darwin-arm64.aix",
-      "manifestSha256": "dd402e2b58f6e405ec4cf8dab9c60c6684583c05e00805d599e8286979ed1b26",
-      "packageId": "aster/aster-sandbox",
-      "packageSha256": "8d3a3cc109db423fa3f8ad487479f92688eb288dcc070e6a9cc095ffd553b98c",
-      "required": true,
-      "sha256": "92dbe5b6b87b0fc9c2c452802f2d080477e39796d7207f852557bcb02f6bc522",
-      "size": 50188055,
-      "target": "darwin-arm64",
-      "version": "0.1.0+9203e78ecfff6b7b8e64a684266a26d8186b310a"
     }
   },
   "deferred": false,
